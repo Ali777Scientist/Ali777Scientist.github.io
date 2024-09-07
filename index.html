@@ -11,32 +11,6 @@
     <meta property="og:image" content="https://example.com/image.jpg">
     <meta property="og:url" content="https://example.com/">
 	
-	<script type="module">
-		// Import the functions you need from the SDKs you need
-		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
-		import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
-		// TODO: Add SDKs for Firebase products that you want to use
-		// https://firebase.google.com/docs/web/setup#available-libraries
-
-		// Your web app's Firebase configuration
-		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-		const firebaseConfig = {
-			apiKey: "AIzaSyCUx2VeQo33GEa-i-YHrlx-ndfGcTCmmHw",
-			authDomain: "datastore-8c4e4.firebaseapp.com",
-			projectId: "datastore-8c4e4",
-			storageBucket: "datastore-8c4e4.appspot.com",
-			messagingSenderId: "233259574459",
-			appId: "1:233259574459:web:150f03bd740951a4dcb59e",
-			measurementId: "G-PK0HC4HNST"
-		};
-
-		// Initialize Firebase
-		const app = initializeApp(firebaseConfig);
-		const analytics = getAnalytics(app);
-		const auth = firebase.auth();
-        	const db = firebase.firestore();
-	</script>
-	
   </head>
   <body>
     <header>
@@ -70,14 +44,33 @@
     </div>
     </main>
     
+    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js"></script>
+
     <script>
+    
+	const firebaseConfig = {
+		apiKey: "AIzaSyCUx2VeQo33GEa-i-YHrlx-ndfGcTCmmHw",
+		authDomain: "datastore-8c4e4.firebaseapp.com",
+		projectId: "datastore-8c4e4",
+		storageBucket: "datastore-8c4e4.appspot.com",
+		messagingSenderId: "233259574459",
+		appId: "1:233259574459:web:150f03bd740951a4dcb59e",
+		measurementId: "G-PK0HC4HNST"
+	};
+
+	// Initialize Firebase
+	const app = initializeApp(firebaseConfig);
+	//const analytics = getAnalytics(app);
+	const auth = firebase.auth();
+	//const db = firebase.firestore();
+	
 	// Регистрация
         function register() {
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
 
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
+            auth.createUserWithEmailAndPassword(email, password).then((userCredential) => {
                     document.getElementById('register-message').innerText = 'Регистрация успешна!';
                     document.getElementById('register-email').value = '';
                     document.getElementById('register-password').value = '';
@@ -92,12 +85,10 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
+            auth.signInWithEmailAndPassword(email, password).then((userCredential) => {
                     document.getElementById('login-message').innerText = 'Вход успешен!';
                     showLogoutSection();
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     document.getElementById('login-message').innerText = 'Ошибка входа: ' + error.message;
                 });
         }
