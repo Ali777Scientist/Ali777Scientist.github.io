@@ -33,41 +33,76 @@
 		// Initialize Firebase
 		const app = initializeApp(firebaseConfig);
 		const analytics = getAnalytics(app);
+		const auth = firebase.auth();
+        	const db = firebase.firestore();
 	</script>
 	
   </head>
   <body>
     <header>
       <h1>Личный сайт</h1>
-      <p>Который сделан на основе готового шаблона</p>
-      <nav>
-        <ul>
-          <li><a href="index.html">Эта страница</a></li>
-          <li><a href="catalog.html">Другая страница</a></li>
-        </ul>
-      </nav>
     </header>
+    
     <main>
-      <article>
-        <section>
-          <h2>Первая секция</h2>
-          <p>Она обо мне</p>
-          <img src="images/man.jpeg" alt="Человек и пароход">
-          <p>Но может быть и о семантике, я пока не решил.</p>
-        </section>
-        <section>
-          <h2>Вторая секция</h2>
-          <p>Она тоже обо мне</p>
-        </section>
-        <section>
-          <h2>И третья</h2>
-          <p>Вы уже должны были начать догадываться.</p>
-        </section>
-      </article>
+	    <!-- Форма регистрации -->
+	    <h2>Регистрация</h2>
+	    <form id="registerForm">
+	      <input type="email" id="email" placeholder="Введите email" required>
+	      <input type="password" id="password" placeholder="Введите пароль" required>
+	      <button type="submit">Зарегистрироваться</button>
+	    </form>
+
+	    <!-- Форма входа -->
+	    <h2>Вход</h2>
+	    <form id="loginForm">
+	      <input type="email" id="loginEmail" placeholder="Введите email" required>
+	      <input type="password" id="loginPassword" placeholder="Введите пароль" required>
+	      <button type="submit">Войти</button>
+	    </form>
     </main>
-    <footer>
-      <p>Сюда бы я вписал информацию об авторе и ссылки на другие сайты</p>
-    </footer>
-    <!-- сюда можно подключить jquery <script src="scripts/app.js" defer></script> -->
+    
+    <script>
+	// Регистрация нового пользователя
+	document.getElementById('registerForm').addEventListener('submit', (e) => {
+	    e.preventDefault();
+	    const email = document.getElementById('email').value;
+	    const password = document.getElementById('password').value;
+
+	    auth.createUserWithEmailAndPassword(email, password)
+		.then((userCredential) => {
+		    const user = userCredential.user;
+		    console.log('Пользователь зарегистрирован:', user);
+
+		    // Добавление пользователя в Firestore
+		    return db.collection('users').doc(user.uid).set({
+		        email: user.email,
+		        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+		    });
+		})
+		.then(() => {
+		    alert('Регистрация прошла успешно!');
+		})
+		.catch((error) => {
+		    console.error('Ошибка при регистрации:', error.message);
+		});
+	});
+
+	// Вход пользователя
+	document.getElementById('loginForm').addEventListener('submit', (e) => {
+	    e.preventDefault();
+	    const email = document.getElementById('loginEmail').value;
+	    const password = document.getElementById('loginPassword').value;
+
+	    auth.signInWithEmailAndPassword(email, password)
+		.then((userCredential) => {
+		    const user = userCredential.user;
+		    console.log('Пользователь вошел:', user);
+		    alert('Вход выполнен успешно!');
+		})
+		.catch((error) => {
+		    console.error('Ошибка при входе:', error.message);
+		});
+	});
+    </script>
   </body>
 </html>
