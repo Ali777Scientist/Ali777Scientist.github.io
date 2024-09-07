@@ -44,65 +44,98 @@
     </header>
     
     <main>
-	    <!-- Форма регистрации -->
-	    <h2>Регистрация</h2>
-	    <form id="registerForm">
-	      <input type="email" id="email" placeholder="Введите email" required>
-	      <input type="password" id="password" placeholder="Введите пароль" required>
-	      <button type="submit">Зарегистрироваться</button>
-	    </form>
+	    <!-- Форма для регистрации -->
+    <div id="register-section">
+        <h3>Регистрация</h3>
+        <input type="email" id="register-email" placeholder="Email">
+        <input type="password" id="register-password" placeholder="Пароль">
+        <button onclick="register()">Зарегистрироваться</button>
+        <p id="register-message"></p>
+    </div>
 
-	    <!-- Форма входа -->
-	    <h2>Вход</h2>
-	    <form id="loginForm">
-	      <input type="email" id="loginEmail" placeholder="Введите email" required>
-	      <input type="password" id="loginPassword" placeholder="Введите пароль" required>
-	      <button type="submit">Войти</button>
-	    </form>
+    <!-- Форма для входа -->
+    <div id="login-section">
+        <h3>Вход</h3>
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-password" placeholder="Пароль">
+        <button onclick="login()">Войти</button>
+        <p id="login-message"></p>
+    </div>
+
+    <!-- Кнопка выхода -->
+    <div id="logout-section" style="display: none;">
+        <h3>Вы вошли в систему</h3>
+        <button onclick="logout()">Выйти</button>
+        <p id="logout-message"></p>
+    </div>
     </main>
     
     <script>
-	// Регистрация нового пользователя
-	document.getElementById('registerForm').addEventListener('submit', (e) => {
-	    e.preventDefault();
-	    const email = document.getElementById('email').value;
-	    const password = document.getElementById('password').value;
+	// Регистрация
+        function register() {
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
 
-	    auth.createUserWithEmailAndPassword(email, password)
-		.then((userCredential) => {
-		    const user = userCredential.user;
-		    console.log('Пользователь зарегистрирован:', user);
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    document.getElementById('register-message').innerText = 'Регистрация успешна!';
+                    document.getElementById('register-email').value = '';
+                    document.getElementById('register-password').value = '';
+                })
+                .catch((error) => {
+                    document.getElementById('register-message').innerText = 'Ошибка регистрации: ' + error.message;
+                });
+        }
 
-		    // Добавление пользователя в Firestore
-		    return db.collection('users').doc(user.uid).set({
-		        email: user.email,
-		        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-		    });
-		})
-		.then(() => {
-		    alert('Регистрация прошла успешно!');
-		})
-		.catch((error) => {
-		    console.error('Ошибка при регистрации:', error.message);
-		});
-	});
+        // Вход
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
 
-	// Вход пользователя
-	document.getElementById('loginForm').addEventListener('submit', (e) => {
-	    e.preventDefault();
-	    const email = document.getElementById('loginEmail').value;
-	    const password = document.getElementById('loginPassword').value;
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    document.getElementById('login-message').innerText = 'Вход успешен!';
+                    showLogoutSection();
+                })
+                .catch((error) => {
+                    document.getElementById('login-message').innerText = 'Ошибка входа: ' + error.message;
+                });
+        }
 
-	    auth.signInWithEmailAndPassword(email, password)
-		.then((userCredential) => {
-		    const user = userCredential.user;
-		    console.log('Пользователь вошел:', user);
-		    alert('Вход выполнен успешно!');
-		})
-		.catch((error) => {
-		    console.error('Ошибка при входе:', error.message);
-		});
-	});
+        // Выход
+        function logout() {
+            auth.signOut().then(() => {
+                document.getElementById('logout-message').innerText = 'Вы вышли из системы!';
+                hideLogoutSection();
+            }).catch((error) => {
+                document.getElementById('logout-message').innerText = 'Ошибка выхода: ' + error.message;
+            });
+        }
+
+        // Показываем секцию для выхода
+        function showLogoutSection() {
+            document.getElementById('logout-section').style.display = 'block';
+            document.getElementById('register-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'none';
+        }
+
+        // Скрываем секцию для выхода
+        function hideLogoutSection() {
+            document.getElementById('logout-section').style.display = 'none';
+            document.getElementById('register-section').style.display = 'block';
+            document.getElementById('login-section').style.display = 'block';
+        }
+
+        // Слушаем состояние аутентификации
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // Пользователь вошел
+                showLogoutSection();
+            } else {
+                // Пользователь вышел
+                hideLogoutSection();
+            }
+        });
     </script>
   </body>
 </html>
