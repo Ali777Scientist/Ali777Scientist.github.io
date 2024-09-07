@@ -10,6 +10,31 @@
     <meta property="og:description" content="Описание страницы в OG">
     <meta property="og:image" content="https://example.com/image.jpg">
     <meta property="og:url" content="https://example.com/">
+	
+	<script type="module">
+		// Import the functions you need from the SDKs you need
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+		import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
+		// TODO: Add SDKs for Firebase products that you want to use
+		// https://firebase.google.com/docs/web/setup#available-libraries
+
+		// Your web app's Firebase configuration
+		// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+		const firebaseConfig = {
+			apiKey: "AIzaSyCUx2VeQo33GEa-i-YHrlx-ndfGcTCmmHw",
+			authDomain: "datastore-8c4e4.firebaseapp.com",
+			projectId: "datastore-8c4e4",
+			storageBucket: "datastore-8c4e4.appspot.com",
+			messagingSenderId: "233259574459",
+			appId: "1:233259574459:web:150f03bd740951a4dcb59e",
+			measurementId: "G-PK0HC4HNST"
+		};
+
+		// Initialize Firebase
+		const app = initializeApp(firebaseConfig);
+		const analytics = getAnalytics(app);
+	</script>
+	
   </head>
   <body>
     <header>
@@ -27,7 +52,7 @@
         <section>
           <h2>Первая секция</h2>
           <p>Она обо мне</p>
-          <img src="images/image.png" alt="Человек и пароход">
+          <img src="images/man.jpeg" alt="Человек и пароход">
           <p>Но может быть и о семантике, я пока не решил.</p>
         </section>
         <section>
